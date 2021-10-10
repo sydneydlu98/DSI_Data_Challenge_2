@@ -7,7 +7,6 @@ output:
     toc: true
     toc_float: true
 ---
-
 [my github link] https://github.com/sydneydlu98/DSI_Data_Challenge_2
 
 ```{r setup, include=FALSE}
