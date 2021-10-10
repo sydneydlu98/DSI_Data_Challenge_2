@@ -1,0 +1,51 @@
+---
+title: "DSI_Data_Challenge"
+author: "Dingxin Lu"
+date: "10/10/2021"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+DSI Data Challenge 2
+
+Dingxin Lu
+
+[my github link] https://github.com/sydneydlu98/DSI_Data_Challenge_2
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+*Prep* 
+```{r, message=FALSE}
+# load all the packages
+library(here)
+library(readxl)
+
+# Read in the data from each of the three trash wheels
+Mr_Trash_Wheel <- read_excel("Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
+    sheet = "Mr. Trash Wheel")
+
+Professor_Trash_Wheel <- read_excel("Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
+    sheet = "Professor Trash Wheel")
+
+Captain_Trash_Wheel <- read_excel("Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
+    sheet = "Captain Trash Wheel")
+```
+
+## Problem 1
+
+We will be working with data from Mr. Trash Wheel, a water wheel trash collection device that removed trash from the Inner Harbor in Baltimore, Maryland. There are three trash wheels we will be exploring (Mr. Trash Wheel, Professor Trash Wheel, and Captain Trash Wheel). I have provided you the data for this on Canvas in the Excel spreadsheet titled Trash-Wheel-Collection-Totals-8-6-19.xlsx.
+
+## Problem 2
+
+Next we will be examining data from FiveThirtyEight on the S&P closing prices and the unemployment rate. For this problem, the data is provided on Canvas. You will need snp.csv and unemployment.csv.
+
+## Problem 3
+
+Next we will examine the direct relationship between the S&P closing prices and the unemployment rate using data from 2000 and onward in a scatterplot.
+
+## Problem 4
+
+Write a paragraph (at least 5 sentences) describing what you observed in the plots in Problems 2 & 3.
