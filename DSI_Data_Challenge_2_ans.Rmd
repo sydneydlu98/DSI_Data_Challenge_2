@@ -18,6 +18,11 @@ knitr::opts_chunk$set(echo = TRUE)
 # load all the packages
 library(here)
 library(readxl)
+library(dplyr)
+library(tidyverse)
+library(janitor)
+library(lubridate) 
+library(tidyr)
 
 # Read in the data from each of the three trash wheels
 Mr_Trash_Wheel <- read_excel("Data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
@@ -32,16 +37,51 @@ Captain_Trash_Wheel <- read_excel("Data/Trash-Wheel-Collection-Totals-8-6-19.xls
 
 ## Problem 1
 
-We will be working with data from Mr. Trash Wheel, a water wheel trash collection device that removed trash from the Inner Harbor in Baltimore, Maryland. There are three trash wheels we will be exploring (Mr. Trash Wheel, Professor Trash Wheel, and Captain Trash Wheel). I have provided you the data for this on Canvas in the Excel spreadsheet titled Trash-Wheel-Collection-Totals-8-6-19.xlsx.
+**We will be working with data from Mr. Trash Wheel, a water wheel trash collection device that removed trash from the Inner Harbor in Baltimore, Maryland. There are three trash wheels we will be exploring (Mr. Trash Wheel, Professor Trash Wheel, and Captain Trash Wheel). I have provided you the data for this on Canvas in the Excel spreadsheet titled Trash-Wheel-Collection-Totals-8-6-19.xlsx.**
+
+```{r}
+Mr_Trash_Wheel_clean <- Mr_Trash_Wheel %>%
+  clean_names() %>%
+  filter(is.na(dumpster) == "FALSE") %>%
+  mutate(wheel = "Mr. Trash Wheel") %>%
+  select(plastic_bottles:homes_powered) 
+
+Professor_Trash_Wheel_clean <- Professor_Trash_Wheel %>%
+  clean_names() %>% 
+  filter(is.na(dumpster) == "FALSE") %>%
+  mutate(wheel = "Professor Trash Wheel") %>%
+  select(plastic_bottles:homes_powered)
+  
+Captain_Trash_Wheel_clean <- Captain_Trash_Wheel %>%
+  clean_names() %>% 
+  filter(is.na(dumpster) == "FALSE") %>%
+  mutate(wheel = "Captain Trash Wheel") %>%
+  select(plastic_bottles:homes_powered)
+   
+## bind the three dataframes together into a dataframe
+all_trash_wheels <- bind_rows(list(Mr_Trash_Wheel_clean, Professor_Trash_Wheel_clean, Captain_Trash_Wheel_clean))
+
+all_trash_wheels_UPDATED <- all_trash_wheels %>%
+  pivot_longer(col = everything(),
+               names_to = 'trash_type', 
+               values_to = 'number')
+```
 
 ## Problem 2
 
-Next we will be examining data from FiveThirtyEight on the S&P closing prices and the unemployment rate. For this problem, the data is provided on Canvas. You will need snp.csv and unemployment.csv.
+**Next we will be examining data from FiveThirtyEight on the S&P closing prices and the unemployment rate. For this problem, the data is provided on Canvas. You will need snp.csv and unemployment.csv.**
+```{r}
+
+```
 
 ## Problem 3
 
-Next we will examine the direct relationship between the S&P closing prices and the unemployment rate using data from 2000 and onward in a scatterplot.
+**Next we will examine the direct relationship between the S&P closing prices and the unemployment rate using data from 2000 and onward in a scatterplot.**
+```{r}
+
+```
 
 ## Problem 4
 
-Write a paragraph (at least 5 sentences) describing what you observed in the plots in Problems 2 & 3.
+**Write a paragraph (at least 5 sentences) describing what you observed in the plots in Problems 2 & 3.**
+
