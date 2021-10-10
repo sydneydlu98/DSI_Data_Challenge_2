@@ -24,13 +24,13 @@ library(here)
 library(readxl)
 
 # Read in the data from each of the three trash wheels
-Mr_Trash_Wheel <- read_excel("Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
+Mr_Trash_Wheel <- read_excel("Data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
     sheet = "Mr. Trash Wheel")
 
-Professor_Trash_Wheel <- read_excel("Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
+Professor_Trash_Wheel <- read_excel("Data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
     sheet = "Professor Trash Wheel")
 
-Captain_Trash_Wheel <- read_excel("Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
+Captain_Trash_Wheel <- read_excel("Data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
     sheet = "Captain Trash Wheel")
 ```
 
