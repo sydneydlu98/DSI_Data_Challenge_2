@@ -337,24 +337,11 @@ all_trash_wheels_June_2018 %&gt;%
 <h2>Problem 2</h2>
 <p><strong>Next we will be examining data from FiveThirtyEight on the S&amp;P closing prices and the unemployment rate. For this problem, the data is provided on Canvas. You will need snp.csv and unemployment.csv.</strong></p>
 <pre class="r"><code>## load both data
-snp &lt;- read_csv(&quot;Data/snp.csv&quot;)</code></pre>
-<pre><code>## Rows: 787 Columns: 2</code></pre>
-<pre><code>## -- Column specification --------------------------------------------------------
-## Delimiter: &quot;,&quot;
-## chr (1): date
-## dbl (1): close</code></pre>
-<pre><code>## 
-## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>unemployment &lt;- read_csv(&quot;Data/unemployment.csv&quot;)</code></pre>
-<pre><code>## Rows: 68 Columns: 13</code></pre>
-<pre><code>## -- Column specification --------------------------------------------------------
-## Delimiter: &quot;,&quot;
-## dbl (13): Year, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec</code></pre>
-<pre><code>## 
-## i Use `spec()` to retrieve the full column specification for this data.
-## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
-<pre class="r"><code>snp_clean &lt;- snp %&gt;%
+snp &lt;- read_csv(&quot;Data/snp.csv&quot;)
+unemployment &lt;- read_csv(&quot;Data/unemployment.csv&quot;)
+
+
+snp_clean &lt;- snp %&gt;%
   mutate(date = as_date(mdy(date))) %&gt;%
   mutate(date = if_else(date &gt; &quot;2050-01-01&quot;,
                         date %m-% years(100),

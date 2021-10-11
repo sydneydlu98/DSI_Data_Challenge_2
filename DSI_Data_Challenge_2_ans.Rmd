@@ -109,9 +109,8 @@ all_trash_wheels_June_2018 %>%
 ## load both data
 snp <- read_csv("Data/snp.csv")
 unemployment <- read_csv("Data/unemployment.csv")
-```
 
-```{r}
+
 snp_clean <- snp %>%
   mutate(date = as_date(mdy(date))) %>%
   mutate(date = if_else(date > "2050-01-01",
