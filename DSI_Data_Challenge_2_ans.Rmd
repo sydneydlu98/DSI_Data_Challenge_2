@@ -25,7 +25,13 @@ library(lubridate)
 library(tidyr)
 library(stringr)
 library(readr)
+```
 
+## Problem 1
+
+**We will be working with data from Mr. Trash Wheel, a water wheel trash collection device that removed trash from the Inner Harbor in Baltimore, Maryland. There are three trash wheels we will be exploring (Mr. Trash Wheel, Professor Trash Wheel, and Captain Trash Wheel). I have provided you the data for this on Canvas in the Excel spreadsheet titled Trash-Wheel-Collection-Totals-8-6-19.xlsx.**
+
+```{r fig.width=10}
 # Read in the data from each of the three trash wheels
 Mr_Trash_Wheel <- read_excel("Data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
     sheet = "Mr. Trash Wheel")
@@ -35,48 +41,60 @@ Professor_Trash_Wheel <- read_excel("Data/Trash-Wheel-Collection-Totals-8-6-19.x
 
 Captain_Trash_Wheel <- read_excel("Data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
     sheet = "Captain Trash Wheel")
-```
 
-## Problem 1
-
-**We will be working with data from Mr. Trash Wheel, a water wheel trash collection device that removed trash from the Inner Harbor in Baltimore, Maryland. There are three trash wheels we will be exploring (Mr. Trash Wheel, Professor Trash Wheel, and Captain Trash Wheel). I have provided you the data for this on Canvas in the Excel spreadsheet titled Trash-Wheel-Collection-Totals-8-6-19.xlsx.**
-
-```{r}
-Mr_Trash_Wheel_clean <- Mr_Trash_Wheel %>%
-  clean_names() %>%
-  filter(is.na(dumpster) == "FALSE") %>%
-  mutate(wheel = "Mr. Trash Wheel") %>%
-  select(-x15, -x16, -x17) 
-
-Professor_Trash_Wheel_clean <- Professor_Trash_Wheel %>%
-  clean_names() %>% 
-  filter(is.na(dumpster) == "FALSE") %>%
-  mutate(wheel = "Professor Trash Wheel")
+# Create a data wrangling function
+data_wrangling <- function(data, name) {
+  data %>%
+    clean_names() %>%
+    filter(is.na(dumpster) == FALSE) %>%
+    select(dumpster:homes_powered) %>%
+    mutate(wheel = name) %>%
+    select(-dumpster, -month, -year, 
+           -weight_tons, -volume_cubic_yards, -homes_powered)
+}
+ 
+## Perform the operations for the data
+Mr_Trash_Wheel_clean <- data_wrangling(Mr_Trash_Wheel, 
+                                  "Mr. Trash Wheel")
+Professor_Trash_Wheel_clean <- data_wrangling(Professor_Trash_Wheel,
+                                         "Professor Trash Wheel")
+Captain_Trash_Wheel_clean <- data_wrangling(Captain_Trash_Wheel,
+                                       "Captain Trash Wheel")
   
-Captain_Trash_Wheel_clean <- Captain_Trash_Wheel %>%
-  clean_names() %>% 
-  filter(is.na(dumpster) == "FALSE") %>%
-  mutate(wheel = "Captain Trash Wheel")
-   
-## bind the three dataframes together into a dataframe
-all_trash_wheels <- bind_rows(list(Mr_Trash_Wheel_clean, Professor_Trash_Wheel_clean, Captain_Trash_Wheel_clean))
+## bind the three data frames together into a data frame
+all_trash_wheels <- bind_rows(Mr_Trash_Wheel_clean,
+                              Professor_Trash_Wheel_clean,
+                              Captain_Trash_Wheel_clean)
 
-all_trash_wheels_UPDATED <- all_trash_wheels %>%
-  pivot_longer(col = plastic_bottles:homes_powered,
+all_trash_wheels_clean <- all_trash_wheels %>%
+  pivot_longer(col = -c(date, wheel),
                names_to = 'trash_type', 
-               values_to = 'number') %>%
-  ## Use stringr::str_replace and stringr::str_to_title to format the column trash_type for plotting
-  filter(month == "June" & year == 2018) %>%
-  group_by(wheel, trash_type) %>%
-  summarise(amount_trash = sum(number))
+               values_to = 'number')
 
-ggplot(all_trash_wheels_UPDATED) +
-  geom_bar(aes(x = amount_trash)) +
-  facet_wrap( ~ trash_type) +
+## Use stringr::str_replace and stringr::str_to_title to format the column trash_type for plotting
+all_trash_wheels_clean$trash_type <- all_trash_wheels_clean$trash_type %>%
+  str_replace("_", " ") %>%
+  str_to_title()
+
+## Create a new dataframe for June 2018
+all_trash_wheels_June_2018 <- all_trash_wheels_clean %>%
+  filter(year(date) == 2018 & month(date) == 6) %>%
+  group_by(wheel, 
+           trash_type) %>%
+  summarise(total_amount_trash = sum(number, 
+                                     na.rm = TRUE))
+
+## Make a faceted bar plot
+all_trash_wheels_June_2018 %>%
+  ggplot(aes(x = total_amount_trash,
+           y = wheel)) +
+  geom_bar(stat = "identity",
+           aes(fill = wheel)) +
+  facet_wrap( ~ trash_type, nrow = 4) +
   labs(x ='Amount of trash',
-       y ='Wheel',
-       title ='Amount of trash collected by each wheel')
-
+       y ='',
+       fill = "Wheel",
+       title ='Amount of each type of trash collected by each wheel')
 ```
 
 ## Problem 2
@@ -89,17 +107,23 @@ unemployment <- read_csv("Data/unemployment.csv")
 ```
 
 ```{r}
-snp_UPDATED <- snp %>%
-  mutate(date = mdy(date)) %>%
+snp_clean <- snp %>%
+  mutate(date = as_date(mdy(date))) %>%
+  mutate(date = if_else(date > "2050-01-01",
+                        date %m-% years(100),
+                        date)) %>%
   mutate(year = year(date)) %>%
-  mutate(month = month(date, label=TRUE))
-```
+  mutate(month = month(date, 
+                       label=TRUE))
 
-```{r}
-unemployment_UPDATED <- unemployment %>%
-  pivot_longer(everything(),
-               names_to = "time", 
-               values_to = "number")
+unemployment_clean <- unemployment %>%
+  pivot_longer(col = c(Jan:Dec),
+               names_to = "Month", 
+               values_to = "number") %>%
+  mutate(date = mdy(paste(Month, "-01-", Year)))
+
+
+  
 ```
 
 ## Problem 3
