@@ -24,6 +24,7 @@ library(janitor)
 library(lubridate) 
 library(tidyr)
 library(stringr)
+library(readr)
 
 # Read in the data from each of the three trash wheels
 Mr_Trash_Wheel <- read_excel("Data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
@@ -82,7 +83,23 @@ ggplot(all_trash_wheels_UPDATED) +
 
 **Next we will be examining data from FiveThirtyEight on the S&P closing prices and the unemployment rate. For this problem, the data is provided on Canvas. You will need snp.csv and unemployment.csv.**
 ```{r}
+## load both data
+snp <- read_csv("Data/snp.csv")
+unemployment <- read_csv("Data/unemployment.csv")
+```
 
+```{r}
+snp_UPDATED <- snp %>%
+  mutate(date = mdy(date)) %>%
+  mutate(year = year(date)) %>%
+  mutate(month = month(date, label=TRUE))
+```
+
+```{r}
+unemployment_UPDATED <- unemployment %>%
+  pivot_longer(everything(),
+               names_to = "time", 
+               values_to = "number")
 ```
 
 ## Problem 3

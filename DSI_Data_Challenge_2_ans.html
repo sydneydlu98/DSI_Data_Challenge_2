@@ -259,6 +259,7 @@ library(janitor)
 library(lubridate) 
 library(tidyr)
 library(stringr)
+library(readr)
 
 # Read in the data from each of the three trash wheels
 Mr_Trash_Wheel &lt;- read_excel(&quot;Data/Trash-Wheel-Collection-Totals-8-6-19.xlsx&quot;, 
@@ -312,6 +313,32 @@ all_trash_wheels_UPDATED &lt;- all_trash_wheels %&gt;%
 <div id="problem-2" class="section level2">
 <h2>Problem 2</h2>
 <p><strong>Next we will be examining data from FiveThirtyEight on the S&amp;P closing prices and the unemployment rate. For this problem, the data is provided on Canvas. You will need snp.csv and unemployment.csv.</strong></p>
+<pre class="r"><code>## load both data
+snp &lt;- read_csv(&quot;Data/snp.csv&quot;)</code></pre>
+<pre><code>## Rows: 787 Columns: 2</code></pre>
+<pre><code>## -- Column specification --------------------------------------------------------
+## Delimiter: &quot;,&quot;
+## chr (1): date
+## dbl (1): close</code></pre>
+<pre><code>## 
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>unemployment &lt;- read_csv(&quot;Data/unemployment.csv&quot;)</code></pre>
+<pre><code>## Rows: 68 Columns: 13</code></pre>
+<pre><code>## -- Column specification --------------------------------------------------------
+## Delimiter: &quot;,&quot;
+## dbl (13): Year, Jan, Feb, Mar, Apr, May, Jun, Jul, Aug, Sep, Oct, Nov, Dec</code></pre>
+<pre><code>## 
+## i Use `spec()` to retrieve the full column specification for this data.
+## i Specify the column types or set `show_col_types = FALSE` to quiet this message.</code></pre>
+<pre class="r"><code>snp_UPDATED &lt;- snp %&gt;%
+  mutate(date = mdy(date)) %&gt;%
+  mutate(year = year(date)) %&gt;%
+  mutate(month = month(date, label=TRUE))</code></pre>
+<pre class="r"><code>unemployment_UPDATED &lt;- unemployment %&gt;%
+  pivot_longer(everything(),
+               names_to = &quot;time&quot;, 
+               values_to = &quot;number&quot;)</code></pre>
 </div>
 <div id="problem-3" class="section level2">
 <h2>Problem 3</h2>
