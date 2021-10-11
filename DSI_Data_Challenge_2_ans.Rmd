@@ -32,7 +32,7 @@ library(hrbrthemes)
 
 **We will be working with data from Mr. Trash Wheel, a water wheel trash collection device that removed trash from the Inner Harbor in Baltimore, Maryland. There are three trash wheels we will be exploring (Mr. Trash Wheel, Professor Trash Wheel, and Captain Trash Wheel). I have provided you the data for this on Canvas in the Excel spreadsheet titled Trash-Wheel-Collection-Totals-8-6-19.xlsx.**
 
-```{r message=FALSE}
+```{r, message=FALSE}
 # Read in the data from each of the three trash wheels sheets
 Mr_Trash_Wheel <- read_excel("Data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
     sheet = "Mr. Trash Wheel") 
@@ -109,7 +109,7 @@ all_trash_wheels_June_2018 %>%
 ## Problem 2
 
 **Next we will be examining data from FiveThirtyEight on the S&P closing prices and the unemployment rate. For this problem, the data is provided on Canvas. You will need snp.csv and unemployment.csv.**
-```{r, message=FALSE}
+```{r, warning=FALSE, message=FALSE}
 ## load both data
 snp <- read_csv("Data/snp.csv")
 unemployment <- read_csv("Data/unemployment.csv")
@@ -131,10 +131,10 @@ unemployment_clean <- unemployment %>%
   mutate(date = mdy(paste(Month, "-01-", Year)))
 
 ## build joined data
-data <- left_join(snp_clean, unemployment_clean, by = c('date'='date'))
+combined_data <- left_join(snp_clean, unemployment_clean, by = c('date'='date'))
 
 coeff <- 100
-ggplot(data, aes(x = date)) +
+ggplot(combined_data, aes(x = date)) +
   geom_line(aes(y = unemployment_rate), size = 1.5, color = "black") + 
   geom_line(aes(y = close / coeff), size = 1.5, color = "blue") + 
   scale_y_continuous(
