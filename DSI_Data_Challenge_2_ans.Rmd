@@ -25,13 +25,14 @@ library(lubridate)
 library(tidyr)
 library(stringr)
 library(readr)
+library(hrbrthemes)
 ```
 
 ## Problem 1
 
 **We will be working with data from Mr. Trash Wheel, a water wheel trash collection device that removed trash from the Inner Harbor in Baltimore, Maryland. There are three trash wheels we will be exploring (Mr. Trash Wheel, Professor Trash Wheel, and Captain Trash Wheel). I have provided you the data for this on Canvas in the Excel spreadsheet titled Trash-Wheel-Collection-Totals-8-6-19.xlsx.**
 
-```{r fig.width=10, message=FALSE}
+```{r message=FALSE}
 # Read in the data from each of the three trash wheels sheets
 Mr_Trash_Wheel <- read_excel("Data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
     sheet = "Mr. Trash Wheel") 
@@ -95,10 +96,13 @@ all_trash_wheels_June_2018 %>%
              y = wheel)) +
   geom_bar(stat = "identity",
            aes(fill = wheel)) +
-  facet_wrap( ~ trash_type, nrow = 4) +
+  facet_wrap(~trash_type, nrow = 4) +
+  theme(plot.title = element_text(hjust = 0.5),
+        axis.text.y = element_blank(),
+        legend.position = "bottom") +
   labs(x ='Amount of trash',
        y ='',
-       fill = "Wheel",
+       fill = "Wheel:",
        title ='Amount of each type of trash collected by each wheel')
 ```
 
@@ -123,11 +127,26 @@ snp_clean <- snp %>%
 unemployment_clean <- unemployment %>%
   pivot_longer(col = c(Jan:Dec),
                names_to = "Month", 
-               values_to = "number") %>%
+               values_to = "unemployment_rate") %>%
   mutate(date = mdy(paste(Month, "-01-", Year)))
 
+## build joined data
+data <- left_join(snp_clean, unemployment_clean, by = c('date'='date'))
 
-  
+coeff <- 100
+ggplot(data, aes(x = date)) +
+  geom_line(aes(y = unemployment_rate), size = 1.5, color = "black") + 
+  geom_line(aes(y = close / coeff), size = 1.5, color = "blue") + 
+  scale_y_continuous(
+    name = "Unemployment rate",
+    sec.axis = sec_axis( trans = ~.*coeff, name="S&P closing price ($)") ## build a second Y axis
+  ) +
+  theme_ipsum() +
+  theme(
+    axis.title.y = element_text(color = "black", size=13),
+    axis.title.y.right = element_text(color = "blue", size=13)
+  ) +
+  ggtitle("S&P closing price versus the unemployment rate")
 ```
 
 ## Problem 3
