@@ -23,6 +23,7 @@ library(tidyverse)
 library(janitor)
 library(lubridate) 
 library(tidyr)
+library(stringr)
 
 # Read in the data from each of the three trash wheels
 Mr_Trash_Wheel <- read_excel("Data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
@@ -44,27 +45,37 @@ Mr_Trash_Wheel_clean <- Mr_Trash_Wheel %>%
   clean_names() %>%
   filter(is.na(dumpster) == "FALSE") %>%
   mutate(wheel = "Mr. Trash Wheel") %>%
-  select(plastic_bottles:homes_powered) 
+  select(-x15, -x16, -x17) 
 
 Professor_Trash_Wheel_clean <- Professor_Trash_Wheel %>%
   clean_names() %>% 
   filter(is.na(dumpster) == "FALSE") %>%
-  mutate(wheel = "Professor Trash Wheel") %>%
-  select(plastic_bottles:homes_powered)
+  mutate(wheel = "Professor Trash Wheel")
   
 Captain_Trash_Wheel_clean <- Captain_Trash_Wheel %>%
   clean_names() %>% 
   filter(is.na(dumpster) == "FALSE") %>%
-  mutate(wheel = "Captain Trash Wheel") %>%
-  select(plastic_bottles:homes_powered)
+  mutate(wheel = "Captain Trash Wheel")
    
 ## bind the three dataframes together into a dataframe
 all_trash_wheels <- bind_rows(list(Mr_Trash_Wheel_clean, Professor_Trash_Wheel_clean, Captain_Trash_Wheel_clean))
 
 all_trash_wheels_UPDATED <- all_trash_wheels %>%
-  pivot_longer(col = everything(),
+  pivot_longer(col = plastic_bottles:homes_powered,
                names_to = 'trash_type', 
-               values_to = 'number')
+               values_to = 'number') %>%
+  ## Use stringr::str_replace and stringr::str_to_title to format the column trash_type for plotting
+  filter(month == "June" & year == 2018) %>%
+  group_by(wheel, trash_type) %>%
+  summarise(amount_trash = sum(number))
+
+ggplot(all_trash_wheels_UPDATED) +
+  geom_bar(aes(x = amount_trash)) +
+  facet_wrap( ~ trash_type) +
+  labs(x ='Amount of trash',
+       y ='Wheel',
+       title ='Amount of trash collected by each wheel')
+
 ```
 
 ## Problem 2
