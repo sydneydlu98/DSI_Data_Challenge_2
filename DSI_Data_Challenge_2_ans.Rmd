@@ -31,10 +31,10 @@ library(readr)
 
 **We will be working with data from Mr. Trash Wheel, a water wheel trash collection device that removed trash from the Inner Harbor in Baltimore, Maryland. There are three trash wheels we will be exploring (Mr. Trash Wheel, Professor Trash Wheel, and Captain Trash Wheel). I have provided you the data for this on Canvas in the Excel spreadsheet titled Trash-Wheel-Collection-Totals-8-6-19.xlsx.**
 
-```{r fig.width=10}
-# Read in the data from each of the three trash wheels
+```{r fig.width=10, message=FALSE}
+# Read in the data from each of the three trash wheels sheets
 Mr_Trash_Wheel <- read_excel("Data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
-    sheet = "Mr. Trash Wheel")
+    sheet = "Mr. Trash Wheel") 
 
 Professor_Trash_Wheel <- read_excel("Data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
     sheet = "Professor Trash Wheel")
@@ -49,34 +49,39 @@ data_wrangling <- function(data, name) {
     filter(is.na(dumpster) == FALSE) %>%
     select(dumpster:homes_powered) %>%
     mutate(wheel = name) %>%
-    select(-dumpster, -month, -year, 
-           -weight_tons, -volume_cubic_yards, -homes_powered)
+    select(-dumpster, 
+           -month, 
+           -year, 
+           -weight_tons, 
+           -volume_cubic_yards, 
+           -homes_powered)
 }
  
 ## Perform the operations for the data
 Mr_Trash_Wheel_clean <- data_wrangling(Mr_Trash_Wheel, 
-                                  "Mr. Trash Wheel")
+                                       "Mr. Trash Wheel")
 Professor_Trash_Wheel_clean <- data_wrangling(Professor_Trash_Wheel,
-                                         "Professor Trash Wheel")
+                                              "Professor Trash Wheel")
 Captain_Trash_Wheel_clean <- data_wrangling(Captain_Trash_Wheel,
-                                       "Captain Trash Wheel")
+                                            "Captain Trash Wheel")
   
 ## bind the three data frames together into a data frame
 all_trash_wheels <- bind_rows(Mr_Trash_Wheel_clean,
                               Professor_Trash_Wheel_clean,
                               Captain_Trash_Wheel_clean)
 
+## Pivot all_trash_wheels to long format with variables for trash_type and number of each trash type
 all_trash_wheels_clean <- all_trash_wheels %>%
   pivot_longer(col = -c(date, wheel),
                names_to = 'trash_type', 
                values_to = 'number')
 
-## Use stringr::str_replace and stringr::str_to_title to format the column trash_type for plotting
+## format the column trash_type for plotting
 all_trash_wheels_clean$trash_type <- all_trash_wheels_clean$trash_type %>%
   str_replace("_", " ") %>%
   str_to_title()
 
-## Create a new dataframe for June 2018
+## create a new data frame for June 2018
 all_trash_wheels_June_2018 <- all_trash_wheels_clean %>%
   filter(year(date) == 2018 & month(date) == 6) %>%
   group_by(wheel, 
@@ -87,7 +92,7 @@ all_trash_wheels_June_2018 <- all_trash_wheels_clean %>%
 ## Make a faceted bar plot
 all_trash_wheels_June_2018 %>%
   ggplot(aes(x = total_amount_trash,
-           y = wheel)) +
+             y = wheel)) +
   geom_bar(stat = "identity",
            aes(fill = wheel)) +
   facet_wrap( ~ trash_type, nrow = 4) +
@@ -100,7 +105,7 @@ all_trash_wheels_June_2018 %>%
 ## Problem 2
 
 **Next we will be examining data from FiveThirtyEight on the S&P closing prices and the unemployment rate. For this problem, the data is provided on Canvas. You will need snp.csv and unemployment.csv.**
-```{r}
+```{r, message=FALSE}
 ## load both data
 snp <- read_csv("Data/snp.csv")
 unemployment <- read_csv("Data/unemployment.csv")
