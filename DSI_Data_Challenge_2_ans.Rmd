@@ -131,7 +131,7 @@ unemployment_clean <- unemployment %>%
   mutate(date = mdy(paste(Month, "-01-", Year)))
 
 ## build joined data
-combined_data <- left_join(snp_clean, unemployment_clean, by = c('date'='date'))
+combined_data <- inner_join(snp_clean, unemployment_clean, by = c('date'='date'))
 
 coeff <- 100
 ggplot(combined_data, aes(x = date)) +
