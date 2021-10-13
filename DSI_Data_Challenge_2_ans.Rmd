@@ -133,7 +133,7 @@ unemployment_clean <- unemployment %>%
 ## build joined data
 combined_data <- inner_join(snp_clean, unemployment_clean, by = c('date'='date'))
 
-coeff <- 250
+coeff <- 200
 ggplot(combined_data, aes(x = date)) +
   geom_line(aes(y = unemployment_rate), size = 1.5, color = "black") + 
   geom_line(aes(y = close / coeff), size = 1.5, color = "blue") + 
@@ -152,7 +152,7 @@ ggplot(combined_data, aes(x = date)) +
 ## Problem 3
 
 **Next we will examine the direct relationship between the S&P closing prices and the unemployment rate using data from 2000 and onward in a scatter plot.**
-```{r}
+```{r, warning=FALSE, message=FALSE}
 snp_average <- snp_clean %>%
   group_by(year, month) %>%
   summarise(mean_price = mean(close)) %>%
