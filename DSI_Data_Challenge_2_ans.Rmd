@@ -34,13 +34,13 @@ library(hrbrthemes)
 
 ```{r, message=FALSE}
 # Read in the data from each of the three trash wheels sheets
-Mr_Trash_Wheel <- read_excel("Data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
+mr_trash_wheel <- read_excel("Data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
     sheet = "Mr. Trash Wheel") 
 
-Professor_Trash_Wheel <- read_excel("Data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
+professor_trash_wheel <- read_excel("Data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
     sheet = "Professor Trash Wheel")
 
-Captain_Trash_Wheel <- read_excel("Data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
+captain_trash_wheel <- read_excel("Data/Trash-Wheel-Collection-Totals-8-6-19.xlsx", 
     sheet = "Captain Trash Wheel")
 
 # Create a data wrangling function
@@ -59,17 +59,17 @@ data_wrangling <- function(data, name) {
 }
  
 ## Perform the operations for the data
-Mr_Trash_Wheel_clean <- data_wrangling(Mr_Trash_Wheel, 
+mr_trash_wheel_clean <- data_wrangling(mr_trash_wheel, 
                                        "Mr. Trash Wheel")
-Professor_Trash_Wheel_clean <- data_wrangling(Professor_Trash_Wheel,
+professor_trash_wheel_clean <- data_wrangling(professor_trash_wheel,
                                               "Professor Trash Wheel")
-Captain_Trash_Wheel_clean <- data_wrangling(Captain_Trash_Wheel,
+captain_trash_wheel_clean <- data_wrangling(captain_trash_wheel,
                                             "Captain Trash Wheel")
   
 ## bind the three data frames together into a data frame
-all_trash_wheels <- bind_rows(Mr_Trash_Wheel_clean,
-                              Professor_Trash_Wheel_clean,
-                              Captain_Trash_Wheel_clean)
+all_trash_wheels <- bind_rows(mr_trash_wheel_clean,
+                              professor_trash_wheel_clean,
+                              captain_trash_wheel_clean)
 
 ## Pivot all_trash_wheels to long format with variables for trash_type and number of each trash type
 all_trash_wheels_clean <- all_trash_wheels %>%
@@ -133,7 +133,7 @@ unemployment_clean <- unemployment %>%
 ## build joined data
 combined_data <- inner_join(snp_clean, unemployment_clean, by = c('date'='date'))
 
-coeff <- 100
+coeff <- 250
 ggplot(combined_data, aes(x = date)) +
   geom_line(aes(y = unemployment_rate), size = 1.5, color = "black") + 
   geom_line(aes(y = close / coeff), size = 1.5, color = "blue") + 
@@ -151,9 +151,32 @@ ggplot(combined_data, aes(x = date)) +
 
 ## Problem 3
 
-**Next we will examine the direct relationship between the S&P closing prices and the unemployment rate using data from 2000 and onward in a scatterplot.**
+**Next we will examine the direct relationship between the S&P closing prices and the unemployment rate using data from 2000 and onward in a scatter plot.**
 ```{r}
+snp_average <- snp_clean %>%
+  group_by(year, month) %>%
+  summarise(mean_price = mean(close)) %>%
+  mutate(date = mdy(paste(month, "-01-", year)))
 
+data <- inner_join(snp_average, unemployment_clean)
+
+data_updated <- data %>%
+  filter(year >= 2010)
+
+coeff <- 500
+ggplot(data_updated, aes(x = date)) +
+  geom_line(aes(y = unemployment_rate), size = 1.5, color = "black") + 
+  geom_line(aes(y = mean_price / coeff), size = 1.5, color = "blue") + 
+  scale_y_continuous(
+    name = "Unemployment rate",
+    sec.axis = sec_axis(trans = ~.*coeff, name="S&P closing price ($)") ## build a second Y axis
+  ) +
+  theme_ipsum() +
+  theme(
+    axis.title.y = element_text(color = "black", size=13),
+    axis.title.y.right = element_text(color = "blue", size=13)
+  ) +
+  ggtitle("S&P closing price versus the unemployment rate in the year 2015")
 ```
 
 ## Problem 4
