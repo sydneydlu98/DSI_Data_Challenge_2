@@ -178,7 +178,7 @@ ggplot(combined_data,
             size = 1, 
             color = "#2ca02c") + 
   scale_y_continuous(
-    name = "Unemployment rate",
+    name = "Unemployment rate (%)",
     sec.axis = sec_axis(trans = ~.*coeff, 
                         name="S&P closing price") ) + ## build a second Y axis
   theme_ipsum() +
@@ -235,7 +235,7 @@ ggplot(data_updated,
             size = 1, 
             color = "#2ca02c") + 
   scale_y_continuous(
-    name = "Unemployment rate",
+    name = "Unemployment rate (%)",
     sec.axis = sec_axis(trans = ~.*coeff, 
                         name="S&P closing price")) + ## build a second Y axis
   theme_ipsum() +
@@ -244,7 +244,7 @@ ggplot(data_updated,
                                     size=14),
         axis.title.y.right = element_text(color = "#2ca02c", 
                                           size=14)) +
-  ggtitle("S&P closing price versus the unemployment rate after the start of 2000") +
+  ggtitle("S&P closing price versus unemployment rate after the start of 2000") +
   theme(plot.title = element_text(lineheight=.8, 
                                   size=15,
                                   hjust = 0.5,
