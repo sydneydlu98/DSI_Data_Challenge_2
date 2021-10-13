@@ -161,7 +161,7 @@ snp_average <- snp_clean %>%
 data <- inner_join(snp_average, unemployment_clean)
 
 data_updated <- data %>%
-  filter(year >= 2010)
+  filter(year >= 2000)
 
 coeff <- 500
 ggplot(data_updated, aes(x = date)) +
