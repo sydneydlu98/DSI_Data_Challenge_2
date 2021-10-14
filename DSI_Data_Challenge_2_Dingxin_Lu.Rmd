@@ -115,6 +115,7 @@ all_trash_wheels_June_2018 %>%
   geom_bar(stat = "identity") +
   facet_wrap( ~ trash_type, 
               nrow = 4) +
+  theme_minimal() +
   theme(plot.title = element_text(hjust = 0.5),
         axis.text.y = element_blank(),
         legend.position = "bottom") +
@@ -178,19 +179,22 @@ ggplot(combined_data,
             size = 1, 
             color = "#2ca02c") + 
   scale_y_continuous(
-    name = "Unemployment rate (%)",
+    name = "Unemployment Rate",
     sec.axis = sec_axis(trans = ~.*coeff, 
                         name="S&P closing price") ) + ## build a second Y axis
   theme_ipsum() +
-  theme(axis.title.y = element_text(color = "black", 
+  theme_minimal() +
+  theme(axis.title.y = element_text(color = "black",
+                                    face="bold",
                                     size=14),
-        axis.title.y.right = element_text(color = "#2ca02c", 
+        axis.title.y.right = element_text(color = "#2ca02c",
+                                          face="bold",
                                           size=14)) +
   ggtitle("S&P closing price \n versus the unemployment rate") +
+  labs(x = "Date") +
   theme(plot.title = element_text(lineheight=.8, 
                                   size=18,
-                                  hjust = 0.5,
-                                  face="bold"))
+                                  hjust = 0.5))
 ```
 
 ## Problem 3
@@ -230,13 +234,12 @@ ggplot(data = data_updated,
   geom_point(aes(col = year)) +
   theme_minimal() + 
   labs(x = "Unemployment Rate",
-       y = "S&P closing price",
+       y = "S&P Closing Price",
        title = "S&P closing price versus \n unemployment rate after the start of 2000") +
   theme(plot.title = element_text(lineheight=.8, 
                                   size=15,
-                                  hjust = 0.5,
-                                  face="bold"))
-
+                                  hjust = 0.5)) +
+  guides(col=guide_legend("Year"))
 ```
 
 ## Problem 4
