@@ -101,10 +101,11 @@ all_trash_wheels_clean$trash_type <- all_trash_wheels_clean$trash_type %>%
 
 ## create a new data frame for June 2018
 all_trash_wheels_June_2018 <- all_trash_wheels_clean %>%
-  filter(year(date) == 2018 & month(date) == 6) %>% ## filtering the data for only June 2018
-  group_by(wheel, 
+  filter(year(date) == 2018 &
+           month(date) == 6) %>% ## filtering the data for only June 2018
+  group_by(wheel,
            trash_type) %>%
-  summarise(total_amount_trash = sum(number, 
+  summarise(total_amount_trash = sum(number,
                                      na.rm = TRUE)) ## calculate the total number of each trash item collected by each trash wheel for June 2018
 
 ## make a faceted bar plot
@@ -113,16 +114,18 @@ all_trash_wheels_June_2018 %>%
              y = wheel,
              fill = wheel)) +
   geom_bar(stat = "identity") +
-  facet_wrap( ~ trash_type, 
+  facet_wrap( ~ trash_type,
               nrow = 4) +
   theme_minimal() +
-  theme(plot.title = element_text(hjust = 0.5),
-        axis.text.y = element_blank(),
-        legend.position = "bottom") +
-  labs(x ='Amount of trash',
-       y ='Trash type',
+  theme(
+    plot.title = element_text(hjust = 0.5),
+    axis.text.y = element_blank(),
+    legend.position = "bottom"
+  ) +
+  labs(x = 'Amount of trash',
+       y = 'Trash type',
        fill = "Trash wheel:",
-       title ='Amount of each type of trash collected by each wheel')
+       title = 'Amount of each type of trash collected by each wheel')
 ```
 
 ## Problem 2
@@ -153,48 +156,51 @@ snp_clean <- snp %>%
                         date %m-% years(100),
                         date)) %>%
   mutate(year = year(date)) %>% ## convert dates from 1968 and before
-  mutate(month = month(date, 
-                       label=TRUE)) ## create a year and month variable
+  mutate(month = month(date,
+                       label = TRUE)) ## create a year and month variable
 
 ## data wrangling for the unemployment data
 unemployment_clean <- unemployment %>%
   pivot_longer(col = c(Jan:Dec),
-               names_to = "Month", 
+               names_to = "Month",
                values_to = "unemployment_rate") %>% ## convert the data into long format
   mutate(date = mdy(paste(Month, "-01-", Year))) ## create a date column that takes the month and year and indicates the first day of the month
 
 ## combine adjusted snp and unemployment data
-combined_data <- inner_join(snp_clean, 
-                            unemployment_clean, 
-                            by = c('date'='date'))
+combined_data <- inner_join(snp_clean,
+                            unemployment_clean,
+                            by = c('date' = 'date'))
 
 ## plot both S&P average and the unemployment rate together on the same plot
 coeff <- 200
-ggplot(combined_data, 
+ggplot(combined_data,
        aes(x = date)) +
-  geom_line(aes(y = unemployment_rate), 
-            size = 1, 
-            color = "black") + 
-  geom_line(aes(y = close / coeff), 
-            size = 1, 
-            color = "#2ca02c") + 
-  scale_y_continuous(
-    name = "Unemployment Rate",
-    sec.axis = sec_axis(trans = ~.*coeff, 
-                        name="S&P closing price") ) + ## build a second Y axis
+  geom_line(aes(y = unemployment_rate),
+            size = 1,
+            color = "black") +
+  geom_line(aes(y = close / coeff),
+            size = 1,
+            color = "#2ca02c") +
+  scale_y_continuous(name = "Unemployment Rate",
+                     sec.axis = sec_axis(trans = ~ . * coeff,
+                                         name = "S&P closing price")) + ## build a second Y axis
   theme_ipsum() +
   theme_minimal() +
-  theme(axis.title.y = element_text(color = "black",
-                                    face="bold",
-                                    size=14),
-        axis.title.y.right = element_text(color = "#2ca02c",
-                                          face="bold",
-                                          size=14)) +
+  theme(
+    axis.title.y = element_text(color = "black",
+                                face = "bold",
+                                size = 14),
+    axis.title.y.right = element_text(color = "#2ca02c",
+                                      face = "bold",
+                                      size = 14)
+  ) +
   ggtitle("S&P closing price \n versus the unemployment rate") +
   labs(x = "Date") +
-  theme(plot.title = element_text(lineheight=.8, 
-                                  size=18,
-                                  hjust = 0.5))
+  theme(plot.title = element_text(
+    lineheight = .8,
+    size = 18,
+    hjust = 0.5
+  ))
 ```
 
 ## Problem 3
@@ -219,27 +225,29 @@ snp_average <- snp_clean %>%
   mutate(date = mdy(paste(month, "-01-", year))) ## create a date column that takes the month and year and indicates the first day of the month
 
 ## join the unemployment data with snp_average
-data <- inner_join(snp_average, 
+data <- inner_join(snp_average,
                    unemployment_clean,
-                   by = c('date'='date'))
+                   by = c('date' = 'date'))
 
 ## filter the data and only includes after the start of 2000
 data_updated <- data %>%
   filter(year >= 2000)
 
 ## make a plot of the S&P closing price versus the unemployment rate after the start of 2000
-ggplot(data = data_updated, 
+ggplot(data = data_updated,
        aes(x = unemployment_rate,
            y = mean_closing_price)) +
   geom_point(aes(col = year)) +
-  theme_minimal() + 
+  theme_minimal() +
   labs(x = "Unemployment Rate",
        y = "S&P Closing Price",
        title = "S&P closing price versus \n unemployment rate after the start of 2000") +
-  theme(plot.title = element_text(lineheight=.8, 
-                                  size=15,
-                                  hjust = 0.5)) +
-  guides(col=guide_legend("Year"))
+  theme(plot.title = element_text(
+    lineheight = .8,
+    size = 15,
+    hjust = 0.5
+  )) +
+  guides(col = guide_legend("Year"))
 ```
 
 ## Problem 4
